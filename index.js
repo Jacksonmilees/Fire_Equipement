@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import adminRoutes from "./routes/adminRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
 import connectDB from "./config/db.js";
 import authenticateAdmin from "./middleware/authMiddleware.js";
 import Admin from "./models/AdminModel.js";
@@ -30,7 +31,7 @@ app.use("/api/orders", authenticateAdmin, orderRoutes);
 
 // Public routes
 app.use("/api/product", adminRoutes);
-app.use("/api/category", adminRoutes);
+app.use("/api/category", categoryRoutes);
 app.use("/api/pages", adminRoutes);
 
 // Admin seeding logic
