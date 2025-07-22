@@ -13,4 +13,4 @@ const authenticateAdmin = (req, res, next) => {
   }
 };
 
-export { authenticateAdmin };
+export default authenticateAdmin;
