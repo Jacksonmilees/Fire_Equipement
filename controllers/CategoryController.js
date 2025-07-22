@@ -11,7 +11,20 @@ const getCategory = async (req, res) => {
 
 const createCategory = async (req, res) => {
   try {
-    const category = new Category(req.body);
+    const { name } = req.body;
+    if (!name) {
+      return res.status(400).json({ message: 'Category name is required' });
+    }
+
+    // Generate slug from name
+    const slug = Math.floor(Math.random() * 1000000); // Generate a random 6-digit number
+    
+    const category = new Category({
+      name,
+      slug,
+      subcategories: []
+    });
+    
     await category.save();
     res.status(201).json(category);
   } catch (err) {
