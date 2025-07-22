@@ -6,8 +6,8 @@ import bodyParser from "body-parser";
 import adminRoutes from "./routes/adminRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
-import Admin from "./models/AdminModel.js";
 import connectDB from "./config/db.js";
+import authenticateAdmin from "./middleware/authMiddleware.js";
 
 dotenv.config();
 
@@ -22,12 +22,15 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // Routes
-app.use("/api/admin", adminRoutes);
+// Admin routes (protected)
+app.use("/api/admin", authenticateAdmin, adminRoutes);
+app.use("/api/users", authenticateAdmin, userRoutes);
+app.use("/api/orders", authenticateAdmin, orderRoutes);
+
+// Public routes
 app.use("/api/product", adminRoutes);
 app.use("/api/category", adminRoutes);
 app.use("/api/pages", adminRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/orders", orderRoutes);
 
 // Admin seeding logic
 (async () => {
