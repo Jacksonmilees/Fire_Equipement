@@ -11,24 +11,50 @@ const getCategory = async (req, res) => {
 
 const createCategory = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, slug } = req.body;
+    
+    // Validate required fields
     if (!name) {
       return res.status(400).json({ message: 'Category name is required' });
     }
-
-    // Generate slug from name
-    const slug = Math.floor(Math.random() * 1000000); // Generate a random 6-digit number
+    if (!slug) {
+      return res.status(400).json({ message: 'Category slug is required' });
+    }
+    
+    // Convert slug to number
+    const slugNum = Number(slug);
+    
+    // Validate slug is a valid number
+    if (isNaN(slugNum)) {
+      return res.status(400).json({ message: 'Slug must be a valid number' });
+    }
+    
+    // Check if category with this name already exists
+    const existingCategory = await Category.findOne({ name });
+    if (existingCategory) {
+      return res.status(400).json({ message: 'Category with this name already exists' });
+    }
+    
+    // Check if category with this slug already exists
+    const existingSlug = await Category.findOne({ slug: slugNum });
+    if (existingSlug) {
+      return res.status(400).json({ message: 'Category with this slug already exists' });
+    }
     
     const category = new Category({
       name,
-      slug,
+      slug: slugNum,
       subcategories: []
     });
     
     await category.save();
     res.status(201).json(category);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error('Category creation error:', err);
+    res.status(400).json({ 
+      message: 'Failed to create category', 
+      error: err.message 
+    });
   }
 };
 
