@@ -8,6 +8,7 @@ import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import connectDB from "./config/db.js";
 import authenticateAdmin from "./middleware/authMiddleware.js";
+import Admin from "./models/AdminModel.js";
 
 dotenv.config();
 
@@ -34,13 +35,17 @@ app.use("/api/pages", adminRoutes);
 
 // Admin seeding logic
 (async () => {
-  const email = "info@modera.co.ke";
-  const password = "3r14F65gMv";
-  const existing = await Admin.findOne({ email });
-  if (!existing) {
-    const admin = new Admin({ email, password });
-    await admin.save();
-    console.log("Seeded default admin: info@modera.co.ke");
+  try {
+    const email = "info@modera.co.ke";
+    const password = "3r14F65gMv";
+    const existing = await Admin.findOne({ email });
+    if (!existing) {
+      const admin = new Admin({ email, password });
+      await admin.save();
+      console.log("Seeded default admin: info@modera.co.ke");
+    }
+  } catch (error) {
+    console.error("Error seeding admin:", error);
   }
 })();
 
