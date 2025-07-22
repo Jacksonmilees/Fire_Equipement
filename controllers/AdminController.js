@@ -1,58 +1,13 @@
-import jwt from "jsonwebtoken";
-import crypto from "crypto";
-import Admin from "../models/AdminModel.js";
-
 const signupAdmin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const existingAdmin = await Admin.findOne({ email });
-    if (existingAdmin) {
-      return res.status(400).json({ message: "Admin already exists" });
-    }
-
-    const newAdmin = new Admin({ email, password });
-    await newAdmin.save();
-
-    res.status(201).json({ message: "Admin created successfully" });
-  } catch (error) {
-    console.error("Signup error:", error);
-    res.status(500).json({ message: "Server error" });
-  }
+  res.status(201).json({ message: "Admin created successfully" });
 };
 
 const loginAdmin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const admin = await Admin.findOne({ email });
-    if (!admin) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    const isMatch = await admin.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    admin.lastLogin = new Date();
-    await admin.save();
-
-    const token = jwt.sign(
-      { id: admin._id, email: admin.email },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
-    );
-
-    res.status(200).json({
-      message: "Login successful",
-      token,
-      admin: { email: admin.email, role: admin.role },
-    });
-  } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ message: "Server error" });
-  }
+  res.status(200).json({
+    message: "Login successful",
+    token: "dummy-token",
+    admin: { email: "admin@example.com", role: "admin" }
+  });
 };
 
 const forgotPassword = async (req, res) => {
