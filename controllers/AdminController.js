@@ -3,11 +3,35 @@ const signupAdmin = async (req, res) => {
 };
 
 const loginAdmin = async (req, res) => {
-  res.status(200).json({
-    message: "Login successful",
-    token: "dummy-token",
-    admin: { email: "admin@example.com", role: "admin" }
-  });
+  try {
+    const { email, password } = req.body;
+    const admin = await Admin.findOne({ email });
+
+    if (!admin) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const isMatch = await admin.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Update last login time
+    admin.lastLogin = Date.now();
+    await admin.save();
+
+    res.status(200).json({
+      message: "Login successful",
+      admin: { 
+        id: admin._id,
+        email: admin.email,
+        role: admin.role
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 const forgotPassword = async (req, res) => {
