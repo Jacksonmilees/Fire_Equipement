@@ -90,4 +90,13 @@ const deleteCategory = async (req, res) => {
   }
 };
 
-export { getCategory, getCategoryById, createCategory, updateCategory, deleteCategory };
+const getAllCategories = async (req, res) => {
+  try {
+    const categories = await Category.find();
+    res.json(categories);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export { getCategory, getCategoryById, createCategory, updateCategory, deleteCategory, getAllCategories };

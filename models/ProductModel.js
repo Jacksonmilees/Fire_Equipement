@@ -12,8 +12,6 @@ const productSchema = new mongoose.Schema(
       enum: ["in-stock", "low-stock", "out-of-stock"],
       default: "in-stock",
     },
-    // rating: { type: Number, default: 0 },
-    // reviewCount: { type: Number, default: 0 },
     certifications: { type: String },
     category: {
       type: mongoose.Schema.Types.ObjectId,

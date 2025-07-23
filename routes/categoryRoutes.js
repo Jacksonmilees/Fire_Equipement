@@ -1,8 +1,10 @@
 import express from 'express';
-import { getCategory, getCategoryById, createCategory, updateCategory, deleteCategory } from '../controllers/CategoryController.js';
+import { getCategory, getCategoryById, createCategory, updateCategory, deleteCategory, getAllCategories } from '../controllers/CategoryController.js';
 
 const router = express.Router();
 
+// Get all categories (for /all-categories endpoint)
+router.get('/all-categories', getAllCategories);
 // Get all categories
 router.get('/', getCategory);
 
